@@ -63,6 +63,8 @@ if [ -f ./Makefile ] ; then
   echo "build/" >> .gitignore
   echo "*.o" >> .gitignore
   git add * 
+  git add .vimrc
+  git add .gitignore
   git commit -m "Project Initialization"
 
 else
