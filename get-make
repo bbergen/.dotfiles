@@ -1,0 +1,70 @@
+#!/bin/bash
+
+# This script will copy my generic make file to the current directory
+
+# default behaviour, grab a c makefile and exit
+if [ $# -eq 0 ];
+then
+  echo "[INFO] Importing C Makefile"
+  cp ~/bin/Makefile-base-c ./Makefile
+  sed -i "s/SRC_PATH=/SRC_PATH=./g" ./Makefile
+  exit 1
+fi
+
+# More details can be specified with -c or -p flags
+# for c or cpp projects respectively
+while getopts ":c:p:" opt; do
+  case $opt in
+    c)
+      echo "[INFO] Importing C Makefile for $OPTARG" >&2
+      cp ~/bin/Makefile-base-c ./Makefile
+      TARGET=$OPTARG
+      MAIN=main.c
+      ;;
+    p)
+      echo "[INFO] Importing C++ Makefile for $OPTARG" >&2
+      cp ~/bin/Makefile-base-cpp ./Makefile
+      TARGET=$OPTARG
+      MAIN=main.cpp
+      ;;
+    \?)
+      echo "[ERROR] Invalid Option"
+      exit 1
+      ;;
+    :)
+      echo "[ERROR] Option -$OPTARG requires an argument." >&2
+      exit 1
+  esac
+done
+
+if [ -f ./Makefile ] ; then
+
+  # some project preperation
+  mkdir include
+  mkdir src
+
+  # Some project specific work in the Makefile
+  sed -i '/^SRC_PATH/ s/$/src\//' ./Makefile 
+  sed -i "/^BIN_NAME/ s/$/$TARGET/" ./Makefile 
+  sed -i '/^INCLUDES/ s/$/include\//' ./Makefile 
+
+  # Project specific .vimrc
+  # Requires 'set exrc' in ~.vimrc
+  echo 'let &path.="./include."' > .vimrc
+
+  # Populate project with simple template
+  cp ~/bin/$MAIN ./src/
+
+  # Initialize version control
+  echo "### $TARGET" > README.md
+  git init
+  touch .gitignore
+  echo "bin/" >> .gitignore
+  echo "build/" >> .gitignore
+  echo "*.o" >> .gitignore
+  git add * 
+  git commit -m "Project Initialization"
+
+else
+  echo "[ERROR] Usage: get-make [-c | -p] [project]" >&2
+fi
