@@ -50,7 +50,7 @@ if [ -f ./Makefile ] ; then
 
   # Project specific .vimrc
   # Requires 'set exrc' in ~.vimrc
-  echo 'let &path.="./include."' > .vimrc
+  echo 'let &path.="include,"' > .vimrc
 
   # Populate project with simple template
   cp ~/bin/$MAIN ./src/
