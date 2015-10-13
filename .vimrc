@@ -39,8 +39,9 @@ set incsearch
 set noerrorbells
 set novisualbell
 
-map <F9> :!clear && make <enter>
-map <F8> :!./build.sh
+map <F9> :make <enter>
+map <F8> :cwindow <enter>
+map <F10> :clo <enter>
 
 inoremap {      {}<Left>
 inoremap {<CR>  {<CR>}<Esc>O
